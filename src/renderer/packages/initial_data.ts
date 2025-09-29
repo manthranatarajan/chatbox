@@ -2,6 +2,13 @@ import { migrateMessage } from '@/utils/message'
 import { ModelProviderEnum, Session } from '../../shared/types'
 
 export const defaultSessionsForEN: Session[] = [
+    {
+    id: 'my-first-chat-default',
+    name: 'My First Chat',
+    type: 'chat',
+    messages: [],
+    starred: true,
+  },
   {
     id: 'justchat-b612-406a-985b-3ab4d2c482ff',
     name: 'Just chat',
@@ -1030,15 +1037,5 @@ mindmap
   threads: [],
 }
 
-// Minimal default chat that must appear at the very top of the sidebar
-export const myFirstChatSessionEN: Session = {
-  id: 'my-first-chat-default',
-  name: 'My First Chat',
-  type: 'chat',
-  messages: [].map(migrateMessage),
-}
-
 defaultSessionsForCN.unshift(imageCreatorSessionForCN, artifactSessionCN, mermaidSessionCN)
 defaultSessionsForEN.unshift(imageCreatorSessionForEN, artifactSessionEN, mermaidSessionEN)
-defaultSessionsForEN.unshift(myFirstChatSessionEN)
-defaultSessionsForCN.unshift(myFirstChatSessionEN)
