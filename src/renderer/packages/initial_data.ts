@@ -1030,5 +1030,15 @@ mindmap
   threads: [],
 }
 
+// Minimal default chat that must appear at the very top of the sidebar
+export const myFirstChatSessionEN: Session = {
+  id: 'my-first-chat-default',
+  name: 'My First Chat',
+  type: 'chat',
+  messages: [].map(migrateMessage),
+}
+
 defaultSessionsForCN.unshift(imageCreatorSessionForCN, artifactSessionCN, mermaidSessionCN)
 defaultSessionsForEN.unshift(imageCreatorSessionForEN, artifactSessionEN, mermaidSessionEN)
+defaultSessionsForEN.unshift(myFirstChatSessionEN)
+defaultSessionsForCN.unshift(myFirstChatSessionEN)
