@@ -51,7 +51,7 @@ type MigrateStore = {
   setBlob?: (key: string, value: string) => Promise<void>
 }
 
-export const CurrentVersion = 10
+export const CurrentVersion = 12
 
 export async function migrateOnData(dataStore: MigrateStore, canRelaunch = true) {
   let needRelaunch = false
@@ -145,6 +145,14 @@ export async function migrateOnData(dataStore: MigrateStore, canRelaunch = true)
     configVersion = 11
     await dataStore.setData(StorageKey.ConfigVersion, configVersion)
     log.info(`migrate_10_to_11, needRelaunch: ${needRelaunch}`)
+  }
+
+  if (configVersion < 12) {
+    const _needRelaunch = await migrate_11_to_12_add_my_first_chat(dataStore)
+    needRelaunch ||= _needRelaunch
+    configVersion = 12
+    await dataStore.setData(StorageKey.ConfigVersion, configVersion)
+    log.info(`migrate_11_to_12_add_my_first_chat, needRelaunch: ${needRelaunch}`)
   }
 
   // 如果需要重启，则重启应用
@@ -638,5 +646,29 @@ async function migrate_10_to_11(dataStore: MigrateStore) {
   }
   await dataStore.setData(StorageKey.Settings, settings)
   log.info('migrate_10_to_11, done')
+  return false
+}
+
+// Insert "My First Chat" at the top of chat-sessions-list for EN users if missing
+async function migrate_11_to_12_add_my_first_chat(dataStore: MigrateStore): Promise<boolean> {
+  const lang = await platform.getLocale()
+  if (lang.startsWith('zh')) {
+    return false
+  }
+  const sessionList = await dataStore.getData<SessionMeta[]>(StorageKey.ChatSessionsList, [])
+  const exists = sessionList.some((s) => s.id === 'my-first-chat-default')
+  if (exists) {
+    return false
+  }
+  // Find full default session object from current defaults
+  const my = defaultSessionsForEN.find((s) => s.id === 'my-first-chat-default')
+  if (!my) {
+    return false
+  }
+  // write full session
+  await dataStore.setData(StorageKeyGenerator.session(my.id), my)
+  // prepend to session meta list so it appears first
+  const meta = getSessionMeta(my)
+  await dataStore.setData(StorageKey.ChatSessionsList, [meta, ...sessionList])
   return false
 }

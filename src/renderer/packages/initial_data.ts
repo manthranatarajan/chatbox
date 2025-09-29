@@ -1039,3 +1039,8 @@ mindmap
 
 defaultSessionsForCN.unshift(imageCreatorSessionForCN, artifactSessionCN, mermaidSessionCN)
 defaultSessionsForEN.unshift(imageCreatorSessionForEN, artifactSessionEN, mermaidSessionEN)
+// Ensure "My First Chat" appears at the very top on fresh seeds
+const _ixMyFirstEN = defaultSessionsForEN.findIndex((s) => s.id === 'my-first-chat-default')
+if (_ixMyFirstEN > 0) {
+  defaultSessionsForEN.unshift(defaultSessionsForEN.splice(_ixMyFirstEN, 1)[0])
+}
