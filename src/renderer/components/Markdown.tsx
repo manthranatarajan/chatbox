@@ -268,9 +268,10 @@ function BlockCode(props: {
               onClick={onClickArtifact}
             />
           )}
+          {/* Keep header copy icon visible on small screens for touch devices */}
           {!hiddenCodeCopyButton && (
             <ContentCopyIcon
-              className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1"
+              className="cursor-pointer text-white opacity-60 hover:bg-gray-800 hover:opacity-100 mx-1 sm:hidden"
               fontSize="small"
               onClick={onClickCopy}
             />
@@ -295,6 +296,17 @@ function BlockCode(props: {
             }}
           />
         </div>
+        {/* Hover copy overlay (desktop/tablet). Hidden on small screens. */}
+        {!hiddenCodeCopyButton && (
+          <button
+            aria-label={t('copy')}
+            title={t('copy')}
+            onClick={onClickCopy}
+            className="hidden sm:flex items-center absolute top-2 right-2 z-10 rounded-md bg-slate-700/80 text-white px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <ContentCopyIcon fontSize="small" />
+          </button>
+        )}
         {collapsedState.collapsed && (
           <div
             style={{
